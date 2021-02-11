@@ -7,14 +7,15 @@ import java.util.LinkedList;
 import java.util.Random;
 
 public class GameField extends JPanel implements ActionListener {
-    private static final int DOT_SIZE = 16;
-    private static final int DOT_COUNT = 30;
+    public static final int DOT_SIZE = 16;
+    public static final int DOT_COUNT = 30;
     private static LinkedList<Pos> snake;
     private static Pos apple;
     private static Direction direction;
     private static boolean inGame;
     private static Random random;
     private static final Font font = new Font("SanSerif", Font.BOLD, 34);
+    private static Snake snakeV2;
 
     public GameField() {
         super();
@@ -26,12 +27,15 @@ public class GameField extends JPanel implements ActionListener {
 
         addKeyListener(new Key());
         setFocusable(true);
+
+        setFont(font);
     }
 
     public void init() {
         random = new Random();
         inGame = true;
         direction = Direction.RIGHT;
+        snakeV2 = new Snake(DOT_COUNT, DOT_SIZE, this);
 
         createSnake();
         createApple();
@@ -48,36 +52,18 @@ public class GameField extends JPanel implements ActionListener {
         apple = new Pos(random.nextInt(DOT_COUNT) * DOT_SIZE, random.nextInt(DOT_COUNT) * DOT_SIZE);
     }
 
-    public void checkCollision() {
-        Pos p = snake.getFirst();
-        if (p.x < 0 || p.x >= DOT_COUNT * DOT_SIZE) inGame = false;
-        if (p.y < 0 || p.y >= DOT_COUNT * DOT_SIZE) inGame = false;
-        snake.stream().skip(1).forEach(b -> {
-            if (p.y == b.y && p.x == b.x) inGame = false;
-        });
+    public boolean checkCollision(Pos p) {
+        if (p.x >= DOT_COUNT || p.x < 0) return true;
+        if (p.y >= DOT_COUNT || p.y < 0) return true;
+        return false;
     }
 
-    public boolean isApple() {
-        Pos p = snake.getFirst();
+    public boolean isApple(Pos p) {
         return apple.x == p.x && apple.y == p.y;
     }
 
     public void next() {
-        checkCollision();
-
-        Pos p = snake.getFirst();
-        switch (direction) {
-            case LIFT -> snake.addFirst(new Pos(p.x - DOT_SIZE, p.y));
-            case RIGHT -> snake.addFirst(new Pos(p.x + DOT_SIZE, p.y));
-            case DOWN -> snake.addFirst(new Pos(p.x, p.y + DOT_SIZE));
-            case UP -> snake.addFirst(new Pos(p.x, p.y - DOT_SIZE));
-        }
-
-        if (isApple()) {
-            createApple();
-        } else {
-            snake.removeLast();
-        }
+        snakeV2.next();
     }
 
     @Override
@@ -91,10 +77,16 @@ public class GameField extends JPanel implements ActionListener {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        g.setColor(Color.BLUE);
+        g.fillRect(0,0,DOT_SIZE, DOT_SIZE);
+        g.fillRect((DOT_COUNT-1)*DOT_SIZE,(DOT_COUNT-3)*DOT_SIZE,DOT_SIZE, DOT_SIZE);
+        g.fillRect((DOT_COUNT-1)*DOT_SIZE,0,DOT_SIZE, DOT_SIZE);
+        g.fillRect(0,(DOT_COUNT-3)*DOT_SIZE,DOT_SIZE, DOT_SIZE);
 
         if (inGame) {
             g.setColor(Color.GREEN);
-            snake.forEach(p -> g.fillRect(p.x, p.y, DOT_SIZE, DOT_SIZE));
+            //snake.forEach(p -> g.fillRect(p.x, p.y, DOT_SIZE, DOT_SIZE));
+            snakeV2.draw(g);
 
             g.setColor(Color.RED);
             g.fillRect(apple.x, apple.y, DOT_SIZE, DOT_SIZE);
@@ -102,8 +94,7 @@ public class GameField extends JPanel implements ActionListener {
             //g.drawString("Count: " + snake.size(), 10, 20);
         } else {
             g.setColor(Color.RED);
-            g.setFont(font);
-            g.drawString("Game Over!", 200, getHeight() / 2);
+            g.drawString("Game Over!", 130, 240);
         }
     }
 
