@@ -9,6 +9,6 @@ public class Brain {
     private final Matrix hiddenToOutput = Matrix.random(hiddenSize, outputSize + 1);
 
     public float[] thinks(float[] inputs) {
-        return new float[5];
+        return new float[4];
     }
 }

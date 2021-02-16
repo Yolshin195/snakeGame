@@ -5,6 +5,10 @@ public class Pos {
     public static final Pos DOWN = new Pos(0, 1);
     public static final Pos LEFT = new Pos(-1, 0);
     public static final Pos RIGHT = new Pos(1, 0);
+    public static final Pos LEFT_UP = new Pos(-1, -1);
+    public static final Pos RIGHT_UP = new Pos(1, -1);
+    public static final Pos LEFT_DOWN = new Pos(-1, 1);
+    public static final Pos RIGHT_DOWN = new Pos(1, 1);
 
     public final int x;
     public final int y;
@@ -12,6 +16,12 @@ public class Pos {
     public Pos(int x, int y) {
         this.x = x;
         this.y = y;
+    }
+
+    public static Pos[] getDirections() {
+        return new Pos[] {
+                UP, DOWN, LEFT, RIGHT, LEFT_UP, LEFT_DOWN, RIGHT_UP, RIGHT_DOWN
+        };
     }
 
     public static Pos add(Pos a, Pos b) {

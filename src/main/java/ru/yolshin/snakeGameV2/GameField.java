@@ -7,8 +7,8 @@ import java.util.LinkedList;
 import java.util.Random;
 
 public class GameField extends JPanel implements ActionListener {
-    public static final int DOT_SIZE = 16;
-    public static final int DOT_COUNT = 30;
+    public final int DOT_SIZE = 16;
+    public final int DOT_COUNT = 30;
     private static LinkedList<Pos> snake;
     private static Pos apple;
     private static Direction direction;
